@@ -31,6 +31,5 @@ app.use((req, res, next) => {
 
 //Start the server on port 8080
 app.listen(3000, () => {
-    console.log("Server Version 3.0");
     console.log("Server is listenning on port 3000");
 });

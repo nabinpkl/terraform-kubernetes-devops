@@ -20,5 +20,6 @@ spec:
       containers:
       - name: myapp
         image: docker.io/nabin6246/my-node-app
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000

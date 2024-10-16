@@ -64,13 +64,8 @@ jobs:
           run: kubectl get pods
 
         - name: Deploy to Kubernetes
-          id: deploy-aks
-          uses: Azure/k8s-deploy@v4
-          with:
-            namespace: 'default'
-            manifests: |
-                kubernetes/deploy.yaml
-                kubernetes/service.yaml
-            images: 'docker.io/nabin6246/my-node-app'
-            pull-images: true
+          run:  |
+            kubectl set image deployment/myapp myapp=docker.io/nabin6246/my-node-app:latest -n default
+            kubectl rollout restart deployment/myapp -n default
+
     
