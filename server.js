@@ -11,6 +11,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle requests for the home page if not found then send error page
 app.get('/', (req, res) => {
+    console.log("Home page requested");
     res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
         if (err) {
             res.status(err.status || 404).sendFile(path.join(__dirname, 'public', 'error.html'));
