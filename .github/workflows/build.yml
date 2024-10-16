@@ -27,4 +27,16 @@ jobs:
         - name: Push the Docker image
           run: docker push ${{ secrets.DOCKER_USERNAME }}/my-node-app
 
-        
+        - name: Set up kubectl
+          uses: azure/setup-kubectl@v1
+          with:
+            version: '1.24.0'
+
+        - name: Set up Azure Kubernetes Service (AKS)
+          run: |
+            az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_CLUSTER_NAME }} --client-id ${{ secrets.AZURE_CLIENT_ID }} --client-secret ${{ secrets.AZURE_CLIENT_SECRET }} --tenant-id ${{ secrets.AZURE_TENANT_ID }}
+
+        - name: Update Kubernetes Deployment
+          run: |
+            kubectl set image deployment/myapp myapp=${{ secrets.DOCKER_USERNAME }}/my-node-app
+            kubectl rollout status deployment/myapp
