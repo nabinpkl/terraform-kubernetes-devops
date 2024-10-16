@@ -92,34 +92,6 @@ resource "azurerm_public_ip" "public_ip" {
 
 }
 
-# Virtual Machine
-resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "simple-app-vm"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  network_interface_ids = [
-    azurerm_network_interface.nic.id,
-  ]
-  size = "Standard_B1s"
-
-  admin_username = "azureuser"
-  admin_password = "P@ssw0rdssss"
-  disable_password_authentication = false
-
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
-}
-
 # Network Interface
 resource "azurerm_network_interface" "nic" {
   name                = "simple-app-nic"
@@ -131,5 +103,24 @@ resource "azurerm_network_interface" "nic" {
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.public_ip.id
+  }
+}
+
+
+# Define the AKS cluster
+resource "azurerm_kubernetes_cluster" "aks-cluster" {
+  name                = "aks-cluster"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name  = azurerm_resource_group.rg.name
+  dns_prefix          = "akscluster"
+
+  default_node_pool {
+    name       = "default"
+    node_count = 1
+    vm_size    = "Standard_B2s"
+  }
+
+  identity {
+    type = "SystemAssigned"
   }
 }
