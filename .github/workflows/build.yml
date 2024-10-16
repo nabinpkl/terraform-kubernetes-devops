@@ -27,14 +27,50 @@ jobs:
         - name: Push the Docker image
           run: docker push ${{ secrets.DOCKER_USERNAME }}/my-node-app
 
-        - name: Setup Kubectl
-          uses: actions-hub/kubectl@master
-          env:
-            KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-          with:
-            args: get pods
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build
 
-        # - name: Update Kubernetes Deployment
-        #   run: |
-        #     kubectl set image deployment/myapp myapp=${{ secrets.DOCKER_USERNAME }}/my-node-app
-        #     kubectl rollout status deployment/myapp
+        steps:
+
+        - name: Checkout the code
+          uses: actions/checkout@v2
+
+        - name: Login to Azure
+          uses: azure/login@v2
+          with:
+            creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+
+        - name: Azure CLI script
+          uses: azure/cli@v2
+          with:
+              azcliversion: latest
+              inlineScript: |
+                az account show
+
+        - name: Set AKS context
+          id: set-context
+          uses: azure/aks-set-context@v3
+          with:
+            resource-group: 'kuber-rg'
+            cluster-name: 'aks-cluster'
+
+        - name: Setup kubectl
+          id: install-kubectl
+          uses: azure/setup-kubectl@v3
+
+
+        - name: Verify kubectl
+          run: kubectl get pods
+
+        - name: Deploy to Kubernetes
+          id: deploy-aks
+          uses: Azure/k8s-deploy@v4
+          with:
+            namespace: 'default'
+            manifests: |
+                kubernetes/deploy.yaml
+                kubernetes/service.yaml
+            images: 'docker.io/nabin6246/my-node-app'
+            pull-images: true
+    

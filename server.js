@@ -11,12 +11,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle requests for the home page if not found then send error page
 app.get('/', (req, res) => {
-    console.log("Home page requested");
     res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
         if (err) {
             res.status(err.status || 404).sendFile(path.join(__dirname, 'public', 'error.html'));
         }
     });
+});
+
+// Explicit throw errors for testing
+app.get('/error', (req, res) => {
+    throw new Error("This is a test error");
 });
 
 
@@ -27,5 +31,6 @@ app.use((req, res, next) => {
 
 //Start the server on port 8080
 app.listen(3000, () => {
+    console.log("Server Version 3.0");
     console.log("Server is listenning on port 3000");
 });
