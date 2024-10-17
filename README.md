@@ -1,15 +1,10 @@
 
 # Node.JS Web Application with CI/CD Pipeline
 
-This repostiory contains simple web application built with node.js which is then deployed using CI/CD pipeline by using contenrization.
 
-# Environment Variables Used
-```bash
-export ARM_SUBSCRIPTION_ID="your-subscription-id"
-export ARM_CLIENT_ID="your-client-id"
-export ARM_CLIENT_SECRET="your-client-secret"
-export ARM_TENANT_ID="your-tenant-id"
-```
+This repository contains a simple Node.JS-based web application with infrastructure as code setup through Terraform. A CI/CD pipeline will be implemented to deploy to the cloud using GitHub Actions. The application will be containerized with Docker, and monitoring will be set up using Prometheus and Grafana for resource tracking, with the ELK stack handling log management.
+
+
 
 ### Requiremnts
 Node >= 18
