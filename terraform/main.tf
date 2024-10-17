@@ -107,20 +107,20 @@ resource "azurerm_network_interface" "nic" {
 }
 
 
-# Define the AKS cluster
-resource "azurerm_kubernetes_cluster" "aks-cluster" {
-  name                = "aks-cluster"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name  = azurerm_resource_group.rg.name
-  dns_prefix          = "akscluster"
+# # Define the AKS cluster
+# resource "azurerm_kubernetes_cluster" "aks-cluster" {
+#   name                = "aks-cluster"
+#   location            = azurerm_resource_group.rg.location
+#   resource_group_name  = azurerm_resource_group.rg.name
+#   dns_prefix          = "akscluster"
 
-  default_node_pool {
-    name       = "default"
-    node_count = 1
-    vm_size    = "Standard_B2s"
-  }
+#   default_node_pool {
+#     name       = "default"
+#     node_count = 1
+#     vm_size    = "Standard_B2s"
+#   }
 
-  identity {
-    type = "SystemAssigned"
-  }
-}
+#   identity {
+#     type = "SystemAssigned"
+#   }
+# }
